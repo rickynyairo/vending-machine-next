@@ -1,11 +1,14 @@
 // create login route using nextjs
-import { MemoryDatabase } from "../db";
+import { CosmosDatabase } from "../db";
 import jwt from "jsonwebtoken";
 
-const db = new MemoryDatabase();
+// const db = new MemoryDatabase();
+const db = new CosmosDatabase();
+const SECRET_KEY = process.env.SECRET_KEY || "SECRET_KEY";
 
 export async function POST(request: Request) {
   const { username, password } = await request.json();
+
   // validate user
   const user = await db.validateUser(username, password);
   if (!user) {
@@ -26,7 +29,7 @@ export async function POST(request: Request) {
   };
 
   // create token
-  const token = jwt.sign({ username, role: user.role }, "SECRET_KEY", options);
+  const token = jwt.sign({ username, role: user.role }, SECRET_KEY, options);
 
   const response = new Response(
     JSON.stringify({

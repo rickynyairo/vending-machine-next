@@ -4,7 +4,7 @@ export enum Role {
 }
 
 export interface User {
-  id: string;
+  id?: string;
   username: string;
   password: string;
   role?: Role;
@@ -12,12 +12,12 @@ export interface User {
 }
 
 export interface Database {
-  createUser: (user: User) => Promise<User>;
+  createUser: (user: User) => Promise<User | any>;
   getUserByUsername: (username: string) => Promise<User | undefined>;
   validateUser: (
     username: string,
     password: string
-  ) => Promise<User | undefined>;
+  ) => Promise<User | boolean>;
   getUserById?: (id: string) => Promise<User | undefined>;
   updateUser?: (user: User) => Promise<User>;
 }
