@@ -22,9 +22,11 @@ jobs:
         DATABASE_ENDPOINT: ${{ secrets.DATABASE_ENDPOINT }}
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
         NODE_ENV: test
-        CI: false
+        CI: true
       run: |
         echo "Environment variables set"
+    - name: Run api
+      run: yarn dev &
     - name: Run Playwright tests
       run: yarn test
     - uses: actions/upload-artifact@v3
@@ -33,4 +35,3 @@ jobs:
         name: playwright-report
         path: playwright-report/
         retention-days: 30
-        
