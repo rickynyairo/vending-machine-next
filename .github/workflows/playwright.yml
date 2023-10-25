@@ -22,7 +22,7 @@ jobs:
         DATABASE_ENDPOINT: ${{ secrets.DATABASE_ENDPOINT }}
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
         NODE_ENV: test
-        CI: true
+        CI: false
       run: |
         echo "Environment variables set"
     - name: Run Playwright tests
