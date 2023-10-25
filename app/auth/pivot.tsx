@@ -1,13 +1,9 @@
 "use client";
 import React, { useState } from "react";
+import { SignupForm } from "./signup";
+import { LoginForm } from "./login";
 
-export interface PivotElementProps {
-  SignupForm: React.FunctionComponent;
-  LoginForm: React.FunctionComponent;
-}
-
-export const PivotElement = (props: PivotElementProps) => {
-  const { SignupForm, LoginForm } = props;
+export const PivotElement = () => {
   const [activeTab, setActiveTab] = useState("signup");
 
   const handleTabChange = (tab: string) => {
