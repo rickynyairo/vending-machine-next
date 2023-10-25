@@ -24,9 +24,14 @@ jobs:
         NODE_ENV: test
         CI: true
       run: |
-        echo "Environment variables set"
-    - name: Run api
-      run: yarn dev &
+        # set environment variables to .env
+        echo "DATABASE_ENDPOINT=${DATABASE_ENDPOINT}" >> .env
+        echo "SECRET_KEY=${SECRET_KEY}" >> .env
+        echo "NODE_ENV=${NODE_ENV}" >> .env
+        echo "CI=${CI}" >> .env
+        # source .env
+        source .env
+        echo "Environment variables set."
     - name: Run Playwright tests
       run: yarn test
     - uses: actions/upload-artifact@v3
