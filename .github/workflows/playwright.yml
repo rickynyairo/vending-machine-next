@@ -25,6 +25,8 @@ jobs:
         CI: true
       run: |
         echo "Environment variables set"
+    - name: Run api
+      run: yarn dev &
     - name: Run Playwright tests
       run: yarn test
     - uses: actions/upload-artifact@v3
