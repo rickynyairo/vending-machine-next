@@ -26,6 +26,7 @@ jobs:
       run: |
         # set environment variables to .env
         echo "DATABASE_ENDPOINT=${DATABASE_ENDPOINT}" >> .env
+        echo "the length of DATABASE_ENDPOINT is ${#DATABASE_ENDPOINT}"
         echo "SECRET_KEY=${SECRET_KEY}" >> .env
         echo "NODE_ENV=${NODE_ENV}" >> .env
         echo "CI=${CI}" >> .env
