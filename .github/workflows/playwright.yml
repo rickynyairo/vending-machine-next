@@ -1,9 +1,9 @@
 name: Playwright Tests
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
 jobs:
   test:
     timeout-minutes: 60
@@ -17,6 +17,14 @@ jobs:
       run: yarn
     - name: Install Playwright Browsers
       run: yarn playwright install --with-deps
+    - name: Set Environment Variables
+      env:
+        DATABASE_ENDPOINT: ${{ secrets.DATABASE_ENDPOINT }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        NODE_ENV: test
+        CI: true
+      run: |
+        echo "Environment variables set"
     - name: Run Playwright tests
       run: yarn test
     - uses: actions/upload-artifact@v3
