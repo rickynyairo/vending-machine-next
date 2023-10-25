@@ -20,13 +20,14 @@ jobs:
     - name: Set Environment Variables
       env:
         DATABASE_ENDPOINT: ${{ secrets.DATABASE_ENDPOINT }}
+        DATABASE_KEY: ${{ secrets.DATABASE_KEY }}
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
         NODE_ENV: test
         CI: true
       run: |
         # set environment variables to .env
         echo "DATABASE_ENDPOINT=${DATABASE_ENDPOINT}" >> .env
-        echo "the length of DATABASE_ENDPOINT is ${#DATABASE_ENDPOINT}"
+        echo "DATABASE_KEY=${DATABASE_KEY}" >> .env
         echo "SECRET_KEY=${SECRET_KEY}" >> .env
         echo "NODE_ENV=${NODE_ENV}" >> .env
         echo "CI=${CI}" >> .env
