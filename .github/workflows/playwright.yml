@@ -16,7 +16,7 @@ jobs:
     - name: Install dependencies
       run: yarn
     - name: Install Playwright Browsers
-      run: yarn playwright install --with-deps
+      run: yarn playwright install # --with-deps
     - name: Set Environment Variables
       env:
         DATABASE_ENDPOINT: ${{ secrets.DATABASE_ENDPOINT }}
@@ -33,3 +33,4 @@ jobs:
         name: playwright-report
         path: playwright-report/
         retention-days: 30
+        
