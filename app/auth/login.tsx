@@ -7,10 +7,11 @@ import {
   Input,
   Button,
   Text,
-  Card
+  Card,
 } from "@fluentui/react-components";
 import * as yup from "yup";
 import { useFormik } from "formik";
+import ErrorText from "./ErrorText";
 
 const urlPath = () => {
   // if we're in dev or testing, path is local
@@ -95,7 +96,9 @@ export const LoginForm = () => {
 
   return (
     <Card className={classes.card}>
-      <Text as="h1" weight="bold" size={600} align="start">Login</Text>
+      <Text as="h1" weight="bold" size={600} align="start">
+        Login
+      </Text>
       <form onSubmit={formik.handleSubmit} className={classes.form}>
         <Label htmlFor={userNameInputId} required>
           Username
@@ -109,6 +112,10 @@ export const LoginForm = () => {
           placeholder="Your username"
           className={classes.input}
         />
+        <ErrorText
+          error={formik.errors.username}
+          touched={formik.touched.username}
+        />
         <Label htmlFor={passwordInputId} required>
           Password
         </Label>
@@ -121,6 +128,10 @@ export const LoginForm = () => {
           type="password"
           placeholder="Your password"
           className={classes.input}
+        />
+        <ErrorText
+          error={formik.errors.password}
+          touched={formik.touched.password}
         />
         <Button appearance="primary" type="submit" className={classes.input}>
           Login
