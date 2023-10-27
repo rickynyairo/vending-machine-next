@@ -1,6 +1,16 @@
-"use client"
-import React, { useState } from "react";
+"use client";
+import React, { useId } from "react";
 import { useRouter } from "next/navigation";
+import {
+  makeStyles,
+  Label,
+  Input,
+  Button,
+  Text,
+  Card
+} from "@fluentui/react-components";
+import * as yup from "yup";
+import { useFormik } from "formik";
 
 const urlPath = () => {
   // if we're in dev or testing, path is local
@@ -11,26 +21,49 @@ const urlPath = () => {
     return "http://localhost:3000";
   }
 };
+const validationSchema = yup.object({
+  username: yup.string().required("Username is required"),
+  password: yup.string().required("Password is required"),
+});
+
+const useStyles = makeStyles({
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    minWidth: "480px",
+  },
+  input: {
+    marginBottom: "16px",
+  },
+  button: {
+    marginTop: "16px",
+  },
+  // center the form in the middle of the page
+  card: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "start",
+    height: "100%",
+    width: "fit-content",
+    alignSelf: "center",
+  },
+});
 
 export const LoginForm = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  });
+  const userNameInputId = useId();
+  const passwordInputId = useId();
+  const classes = useStyles();
   const router = useRouter();
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    console.log("formData", formData);
-
-    // Submit the form data to the /signup endpoint as a POST request
+  const handleSubmit = async (values: any) => {
+    // Submit the form data to the /login endpoint as a POST request
     try {
       const response = await fetch(`${urlPath()}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(values),
       });
 
       if (response.status === 200) {
@@ -48,43 +81,51 @@ export const LoginForm = () => {
     }
   };
 
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      password: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      console.log("values", values);
+      handleSubmit(values);
+    },
+  });
+
   return (
-    <div className="max-w-md mx-auto mt-4 p-4 border rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-4">Signup</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-600">
-            Username:
-          </label>
-          <input
-            type="text"
-            className="w-full p-2 border rounded"
-            value={formData.username}
-            onChange={(e) =>
-              setFormData((data) => ({ ...data, username: e.target.value }))
-            }
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-600">
-            Password:
-          </label>
-          <input
-            type="password"
-            className="w-full p-2 border rounded"
-            value={formData.password}
-            onChange={(e) =>
-              setFormData((data) => ({ ...data, password: e.target.value }))
-            }
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded"
-        >
+    <Card className={classes.card}>
+      <Text as="h1" weight="bold" size={600} align="start">Login</Text>
+      <form onSubmit={formik.handleSubmit} className={classes.form}>
+        <Label htmlFor={userNameInputId} required>
+          Username
+        </Label>
+        <Input
+          id={userNameInputId}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.username}
+          name="username"
+          placeholder="Your username"
+          className={classes.input}
+        />
+        <Label htmlFor={passwordInputId} required>
+          Password
+        </Label>
+        <Input
+          id={passwordInputId}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.password}
+          name="password"
+          type="password"
+          placeholder="Your password"
+          className={classes.input}
+        />
+        <Button appearance="primary" type="submit" className={classes.input}>
           Login
-        </button>
+        </Button>
       </form>
-    </div>
+    </Card>
   );
 };
