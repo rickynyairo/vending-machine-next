@@ -2,34 +2,27 @@
 
 // create deposit route using nextjs
 import { CosmosDatabase } from "../db";
-import jwt, { JsonWebTokenError } from "jsonwebtoken";
+import { NextRequest } from "next/server";
 
 // const db = new MemoryDatabase();
 const db = new CosmosDatabase();
-const SECRET_KEY = process.env.SECRET_KEY || "SECRET_KEY";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    // validate token
-    const token = request.headers.get("Authorization")?.split(" ")[1] || "";
-    const tokenData = jwt.verify(token, SECRET_KEY) as {
-      username: string;
-      role: string;
-    };
+    const { amount, username, role } = await request.json();
   
-    if (tokenData.role !== "buyer") {
+    if (role !== "buyer") {
       const response = new Response(
         JSON.stringify({
-          message: "Unauthorized",
+          message: "Unauthorized role",
         }),
         {
-          status: 401,
+          status: 403,
           headers: { "Content-Type": "application/json" },
         }
       );
       return response;
     }
-    const { amount } = await request.json();
     // validate amount
     if (![5, 10, 20, 50, 100].includes(amount)) {
       const response = new Response(
@@ -44,7 +37,7 @@ export async function POST(request: Request) {
       return response;
     }
     // update user balance
-    const user = await db.getUserByUsername(tokenData.username);
+    const user = await db.getUserByUsername(username);
     user.availableBalance += amount;
     await db.updateUser(user);
     const response = new Response(
@@ -58,20 +51,7 @@ export async function POST(request: Request) {
       }
     );
     return response;
-  } catch (error: JsonWebTokenError | any) {
-    // check if jwt error
-    if (error instanceof JsonWebTokenError) {
-      const response = new Response(
-        JSON.stringify({
-          message: "Unauthorized",
-        }),
-        {
-          status: 401,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      return response;
-    }
+  } catch (error:any) {
     // check if error is from cosmosdb
     if (error.code === 409) {
       const response = new Response(
@@ -86,7 +66,7 @@ export async function POST(request: Request) {
       return response;
     }
     // server error
-    const response = new Response(
+    return new Response(
       JSON.stringify({
         message: "Internal server error",
       }),
