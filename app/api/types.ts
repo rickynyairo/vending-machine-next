@@ -19,5 +19,5 @@ export interface Database {
     password: string
   ) => Promise<User | boolean>;
   getUserById?: (id: string) => Promise<User | undefined>;
-  updateUser?: (user: User) => Promise<User>;
+  updateUser?: (user: User) => Promise<User | undefined>;
 }
