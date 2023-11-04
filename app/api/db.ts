@@ -122,4 +122,18 @@ export class CosmosDatabase implements Database {
     }
     return users[0];
   }
+
+  async updateUser(user: User): Promise<User | undefined> {
+    // find user by username and password
+    const { database } = await cosmosClient.databases.createIfNotExists({
+      id: dbName,
+    });
+    const { container } = await database.containers.createIfNotExists({
+      id: "users",
+    });
+    const { resource: updatedUser } = await container
+      .item(user.id as string)
+      .replace(user);
+    return updatedUser;
+  }
 }
